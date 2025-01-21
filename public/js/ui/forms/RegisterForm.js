@@ -10,7 +10,12 @@ class RegisterForm extends AsyncForm {
    * и закрывает окно, в котором находится форма
    * */
   onSubmit(data) {
-    User.register(data, (response) => {
+    User.register(data, (err, response) => {
+      if (err) {
+        console.error('Ошибка регистрации:', err);
+        return;
+      }
+
       if (response && response.success) {
         App.setState('user-logged');
         this.element.reset(); 
@@ -19,7 +24,7 @@ class RegisterForm extends AsyncForm {
           modal.close();
         }
       } else {
-        console.error('Ошибка регистрации:', response.error || 'Неизвестная ошибка');
+        console.error('Ошибка регистрации:', response?.error || 'Неизвестная ошибка');
       }
     });
   }

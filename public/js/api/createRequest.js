@@ -1,45 +1,43 @@
 /**
- * Основная функция для совершения запросов
- * на сервер.
- * */
+ * Основная функция для совершения запросов на сервер.
+ */
 const createRequest = (options = {}) => {
-   const xhr = new XMLHttpRequest();
-   const { url, method, data, callback } = options;
+    const xhr = new XMLHttpRequest();
+    const { url, method = 'GET', data = {}, callback } = options;
 
-   
-   let requestUrl = url;
-   if (method === 'GET' && data) {
-       const queryParams = new URLSearchParams(data).toString();
-       requestUrl += `?${queryParams}`;
-   }
+    if (!url || typeof callback !== 'function') {
+        throw new Error('Необходимо указать URL и функцию callback');
+    }
 
-   xhr.open(method, requestUrl);
-   xhr.responseType = 'json'; 
+    let requestUrl = url;
+    let requestData = null;
 
-   
-   xhr.onload = () => {
-       if (xhr.status >= 200 && xhr.status < 300) {
-           callback(null, xhr.response); 
-       } else {
-           callback(new Error(`Ошибка: ${xhr.status} ${xhr.statusText}`), null); 
-       }
-   };
+    if (method === 'GET') {
+        const queryParams = new URLSearchParams(data).toString();
+        if (queryParams) {
+            requestUrl += `?${queryParams}`;
+        }
+    } else {
+        const formData = new FormData();
+        for (const key in data) {
+            formData.append(key, data[key]);
+        }
+        requestData = formData;
+    }
 
-   
-   xhr.onerror = () => {
-       callback(new Error('Ошибка соединения'), null);
-   };
+    xhr.open(method, requestUrl);
+    xhr.responseType = 'json';
 
-   
-   if (method !== 'GET' && data) {
-       const formData = new FormData();
-       for (const key in data) {
-           formData.append(key, data[key]);
-       }
-       xhr.send(formData);
-   } else {
-       xhr.send();
-   }
+    xhr.onload = () => {
+        callback(null, xhr.response);
+    };
+
+    xhr.onerror = () => {
+        callback(new Error('Ошибка'), null);
+    };
+
+    xhr.send(requestData);
 };
 
  
+  

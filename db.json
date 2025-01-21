@@ -5,6 +5,18 @@
       "email": "demo@demo",
       "password": "demo",
       "id": "1"
+    },
+    {
+      "name": "1",
+      "email": "qqq@web.de",
+      "password": "123",
+      "id": "5uk15d94m65gis9d"
+    },
+    {
+      "name": "1",
+      "email": "www@web.de",
+      "password": "123",
+      "id": "5uk154pcm65h3b62"
     }
   ],
   "accounts": [
@@ -22,6 +34,11 @@
       "name": "Бизнес",
       "user_id": "1",
       "id": "3"
+    },
+    {
+      "name": "Familie ",
+      "user_id": "5uk154pcm65h3b62",
+      "id": "5uk15dxkm66ynck3"
     }
   ],
   "transactions": [
@@ -159,6 +176,31 @@
       "sum": 300000,
       "type": "expense",
       "user_id": "1"
+    },
+    {
+      "id": "5uk15a34m65ht33l",
+      "type": "income",
+      "name": "Familie ",
+      "sum": 1,
+      "user_id": "5uk154pcm65h3b62",
+      "created_at": "2025-01-20T20:22:25.520Z"
+    },
+    {
+      "id": "5uk154u8m65ht8ij",
+      "type": "income",
+      "name": "Familie ",
+      "sum": 1111,
+      "user_id": "5uk154pcm65h3b62",
+      "created_at": "2025-01-20T20:22:32.539Z"
+    },
+    {
+      "id": "5uk1583sm66ynlsk",
+      "type": "income",
+      "name": "Familie ",
+      "sum": 100,
+      "account_id": "5uk15dxkm66ynck3",
+      "user_id": "5uk154pcm65h3b62",
+      "created_at": "2025-01-21T21:01:49.459Z"
     }
   ]
 }

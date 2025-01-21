@@ -1,52 +1,54 @@
-/**
- * Класс CreateTransactionForm управляет формой
- * создания новой транзакции
- * */
 class CreateTransactionForm extends AsyncForm {
-  /**
-   * Вызывает родительский конструктор и
-   * метод renderAccountsList
-   * */
   constructor(element) {
     super(element);
     this.renderAccountsList();
   }
 
-  /**
-   * Получает список счетов с помощью Account.list
-   * Обновляет в форме всплывающего окна выпадающий список
-   * */
   renderAccountsList() {
-    const accountsList = this.element.querySelector('.accounts-select');
-    if (!accountsList) return;
+    Account.list({}, (err, response) => {
+      if (err) {
+        console.error('Ошибка:', err);
+        return;
+      }
 
-    Account.list(null, (err, response) => {
+      const accountSelect = this.element.querySelector('select[name="account_id"]');
+      accountSelect.innerHTML = '';
+
       if (response && response.success) {
-        accountsList.innerHTML = '';
-        response.data.forEach(account => {
-          const option = document.createElement('option');
-          option.value = account.id;
-          option.textContent = account.name;
-          accountsList.appendChild(option);
-        });
+        const optionsHtml = response.data.reduce((html, account) => {
+          return html + `<option value="${account.id}">${account.name}</option>`;
+        }, `<option value="">Выберите счёт</option>`);
+
+        accountSelect.innerHTML = optionsHtml;
       }
     });
   }
 
-  /**
-   * Создаёт новую транзакцию (доход или расход)
-   * с помощью Transaction.create. По успешному результату
-   * вызывает App.update(), сбрасывает форму и закрывает окно,
-   * в котором находится форма
-   * */
   onSubmit(data) {
     Transaction.create(data, (err, response) => {
+      if (err) {
+        console.error('Ошибка:', err);
+        return;
+      }
+
       if (response && response.success) {
         this.element.reset();
-        const modalId = this.element.closest('.modal').dataset.modalId;
-        App.getModal(modalId).close();
-        App.update(); 
+
+        const modal = this.element.closest('.modal');
+        if (modal) {
+          const modalInstance = App.getModal(modal.id);
+          if (modalInstance) {
+            modalInstance.close();
+          }
+        }
+
+        App.update();
+      } else {
+        console.error('Ошибка создания транзакции:', response?.error || 'Неизвестная ошибка');
       }
     });
   }
 }
+
+
+

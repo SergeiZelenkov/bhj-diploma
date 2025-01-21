@@ -1,7 +1,3 @@
-/**
- * Класс CreateAccountForm управляет формой
- * создания нового счёта
- * */
 class CreateAccountForm extends AsyncForm {
   /**
    * Создаёт счёт с помощью Account.create и закрывает
@@ -9,19 +5,22 @@ class CreateAccountForm extends AsyncForm {
    * и сбрасывает форму
    * */
   onSubmit(data) {
-    Account.create(data, (response) => {
+    Account.create(data, (err, response) => {
+      if (err) {
+        console.error('Ошибка', err);
+        return;
+      }
+
       if (response && response.success) {
         this.element.reset();
-        const modal = this.element.closest('.modal');
+
+        const modal = document.getElementById('modal-new-account');
         if (modal) {
-          const modalInstance = App.getModal(modal.id);
-          if (modalInstance) {
-            modalInstance.close(); 
-          }
+          $(modal).modal('hide');
         }
         App.update();
       } else {
-        console.error('Ошибка создания счёта:', response.error);
+        console.error('Ошибка', response?.error || 'ошибка');
       }
     });
   }

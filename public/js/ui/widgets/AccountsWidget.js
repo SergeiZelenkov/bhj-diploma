@@ -58,18 +58,24 @@ class AccountsWidget {
     if (!currentUser) {
       return;
     }
-
-    Account.list(currentUser, (response) => {
+  
+    Account.list(currentUser, (err, response) => {
+      if (err) {
+        console.error("Ошибка при получении списка счетов:", err);
+        return;
+      }
+  
       if (response && response.success) {
         this.clear();
         response.data.forEach((account) => {
           this.renderItem(account);
         });
       } else {
-        console.error("Не удалось получить список счетов", response.error);
+        console.error("Не удалось получить список счетов", response?.error || "Неизвестная ошибка");
       }
     });
   }
+  
 
   /**
    * Очищает список ранее отображённых счетов.
